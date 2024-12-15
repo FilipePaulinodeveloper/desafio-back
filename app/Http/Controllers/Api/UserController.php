@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Service\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -11,16 +12,13 @@ use Illuminate\Support\Facades\Validator;
 class UserController extends Controller
 {
 
+    public function __construct(private UserService $userService)
+    {
+
+    }
     public function index() {
 
-        return User::select(
-            'id',
-            'name',
-            'email',
-            'phone',
-            'created_at',
-            'updated_at'
-        )->orderBy('updated_at DESC')->get();
+        return $this->userService->index();
     }
 
     public function show($id) {

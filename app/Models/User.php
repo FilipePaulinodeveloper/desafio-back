@@ -41,4 +41,18 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function phones()
+    {
+        return $this->hasMany(Phone::class);
+    }
+    public function selectUsers () {
+        self::select(
+            'id',
+            'name',
+            'email',
+            'created_at',
+            'updated_at'
+        )->orderBy('updated_at', 'DESC')->with('phones')->get();
+    }
 }
