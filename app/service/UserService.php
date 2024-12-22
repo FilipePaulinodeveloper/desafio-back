@@ -4,12 +4,15 @@ namespace App\Service;
 
 use App\Models\User;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class UserService
 {
 
-    private function __construct(private User $user)
+    public function __construct(private User $user)
     {
+
     }
 
     /**
@@ -18,9 +21,7 @@ class UserService
      */
     public function index()
     {
-
-      return  $this->user->selectUsers();
-
+        return $this->user->selectUsers();
     }
 
     /**
@@ -29,7 +30,7 @@ class UserService
      */
     public function show(string $id)
     {
-        return $this->findById($id);
+         return $this->user->find($id);
     }
 
     /**
@@ -37,8 +38,38 @@ class UserService
      */
     public function store(array $data)
     {
-        return $this->user->create($data);
+        DB::beginTransaction();
+
+        try {
+            $data['password'] = Hash::make($data['password']);
+            $user = $this->user->create($data); // Cria o usuário
+
+            $phones = $data['phones'] ?? []; // Garante que phones seja um array
+            if (!empty($phones)) {
+                $this->storePhones($phones, $user); // Associa os telefones ao usuário
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'data' => $user,
+                'message' => 'User created successfully'
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
+
+    private function storePhones($phones, $user)
+    {
+        foreach ($phones as $phone) {
+            $user->phones()->create([
+                'phone_number' => $phone,
+            ]);
+        }
+    }
+
 
     /**
      * @param array $data
@@ -46,26 +77,70 @@ class UserService
      */
     public function update(array $data, string $id)
     {
-        $record = $this->findById($id);
-        $record->update($data);
-        return $record->refresh();
+        DB::beginTransaction();
+
+        try {
+            $user = $this->user->find($id);
+            $userdata = array_intersect_key($data, array_flip(['name', 'email']));
+            $user->update($userdata);
+            $this->updatePhones($user,$data);
+            DB::commit();
+
+            return response()->json([
+                'data' => $user,
+                'message' => 'User Updated successfully'
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
-    /**
-     * @param string $id
-     * @return object
-     */
-    public function findById(string $id): object
+    private function updatePhones($user,$data)
     {
-        return $this->user->findOrFail($id);
+
+        if (isset($data['phones'])) {
+
+            $userPhones = $user->phones->keyBy('id');
+
+
+            foreach ($data['phones'] as $phoneData) {
+
+                if (isset($phoneData['id'])) {
+                    if (isset($userPhones[$phoneData['id']])) {
+
+                        $userPhones[$phoneData['id']]->update(['phone_number' => $phoneData['phone_number']]);
+                    }
+                } else {
+                    $user->phones()->create(['phone_number' => $phoneData['phone_number']]);
+                }
+            }
+        }
     }
+
+
     /**
      * @return bool|string|array
      */
     public function destroy($id)
     {
-        $record = $this->findById($id);
-        return $record->delete();
+
+
+
+        try {
+
+            $user = $this->user->find($id);
+            $user->delete();
+
+            return response()->json([
+                'message' => 'User Deleted successfully'
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
 

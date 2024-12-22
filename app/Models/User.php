@@ -47,12 +47,14 @@ class User extends Authenticatable
         return $this->hasMany(Phone::class);
     }
     public function selectUsers () {
-        self::select(
+
+      return  self::select(
             'id',
             'name',
             'email',
             'created_at',
             'updated_at'
         )->orderBy('updated_at', 'DESC')->with('phones')->get();
+        
     }
 }
