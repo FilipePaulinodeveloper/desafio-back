@@ -13,9 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        // Schema::table('users', function (Blueprint $table) {
-        //     $table->string('phone')->nullable();
-        // });
+        Schema::create('phones', function (Blueprint $table) {
+            $table->id();
+            $table->string('phone_number');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->timestamps();
+        });
     }
 
     /**
@@ -25,8 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        // Schema::table('users', function (Blueprint $table) {
-        //     $table->dropColumn('phone');
-        // });
+        Schema::dropIfExists('phones');
     }
 };

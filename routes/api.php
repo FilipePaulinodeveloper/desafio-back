@@ -22,7 +22,8 @@ Route::get('/csrf-token', function () {
 Route::get('/users', [UserController::class, 'index']);
 Route::get('/user/{id}', [UserController::class, 'show'])->where('id', '[0-9]+');
 Route::post('/user', [UserController::class, 'store']);
-
+Route::put('/user/{id}',[UserController::class, 'update']);
+Route::delete('/user/{id}',[UserController::class, 'destroy']);
 /*
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
