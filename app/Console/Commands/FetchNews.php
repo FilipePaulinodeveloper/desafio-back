@@ -8,6 +8,13 @@ use Illuminate\Support\Facades\Http;
 
 class FetchNews extends Command
 {
+
+
+    public function __construct( private News $news)
+    {
+        parent::__construct();
+    }
+
     /**
      * The name and signature of the console command.
      *
@@ -29,28 +36,47 @@ class FetchNews extends Command
      */
     public function handle()
     {
-        $rssFeed = 'https://rss.uol.com.br/feed/tecnologia.xml';
-        $response = Http::withOptions(['verify' => false])->get($rssFeed);
+        $linkNews = 'https://rss.uol.com.br/feed/tecnologia.xml';
+        $newsResponse = $this->getResponse($linkNews);
 
-        if ($response->ok()) {
-            $content = $response->body();
+        if ($newsResponse->ok()) {
+            $content = $newsResponse->body();
 
             $content = mb_convert_encoding($content, 'UTF-8', 'auto');
 
             $xml = simplexml_load_string($content);
 
             foreach ($xml->channel->item as $item) {
-                $title = (string)$item->title;
-                $link = (string)$item->link;
 
-                // Salvar notícia no banco se ainda não existir
-                if (!News::where('link', $link)->exists()) {
-                    News::create(['title' => $title, 'link' => $link]);
-                }
+                $infoNews = $this->getNewsInfor($item);
+
+                $this->saveNewsIfNotExists($infoNews);
+
             }
             $this->info('Notícias coletadas com sucesso.');
         } else {
             $this->error('Erro ao buscar o feed RSS.');
+        }
+    }
+
+    private function getResponse($linkNews)
+    {
+        return Http::withOptions(['verify' => false])->get($linkNews);
+    }
+
+    private function getNewsInfor($item){
+        $title = (string)$item->title;
+        $link = (string)$item->link;
+
+        return ['title' => $title, 'link' => $link];
+    }
+
+    private function saveNewsIfNotExists($infoNews)
+    {
+
+        if (!$this->news->where('link', $infoNews['link'])->exists()) {
+
+            $this->news->create(['title' => $infoNews['title'], 'link' => $infoNews['link']]);
         }
     }
 }

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('link')->unique();
+            $table->boolean('sent')->default(false);
             $table->timestamps();
         });
     }
