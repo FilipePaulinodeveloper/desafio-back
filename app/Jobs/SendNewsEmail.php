@@ -37,12 +37,26 @@ class SendNewsEmail implements ShouldQueue
         $news = News::where('sent', false)->get();
 
         foreach ($users as $user) {
-            Mail::raw("Veja as últimas notícias:\n" . $news->pluck('title')->implode("\n"), function ($message) use ($user) {
+            // Criar a mensagem com título e link das notícias
+            $messageContent = "Veja as últimas notícias:\n\n";
+            foreach ($news as $item) {
+                $messageContent .= "- {$item->title}\n";
+                $messageContent .= "  Link: {$item->link}\n\n";
+            }
+
+            // Enviar o e-mail para o usuário
+            // Mail::raw($messageContent, function ($message) use ($user) {
+            //     $message->to($user->email)
+            //             ->subject('Notícias do dia');
+            // });
+
+            Mail::send('emails.news-email', ['news' => $news], function ($message) use ($user) {
                 $message->to($user->email)
                         ->subject('Notícias do dia');
             });
         }
 
+        // Marcar as notícias como enviadas
         $news->each->update(['sent' => true]);
     }
 }
