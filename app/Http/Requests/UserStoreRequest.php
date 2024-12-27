@@ -28,7 +28,22 @@ class UserStoreRequest extends FormRequest
             'email'     => 'required|string|email|max:255|unique:users',
             'password'  => 'required|string|min:8', // Adicionada uma validação de tamanho mínimo para maior segurança
             'phones'    => 'nullable|array', // Valida que o campo seja um array
-            'phones.*'  => 'string|regex:/^\+?[0-9\-]{7,15}$/', // Valida cada item do array como um número de telefone (com regex básico)
+            'phones.*' => 'string|max:16'
         ];
     }
+
+    public function messages()
+{
+    return [
+        'name.required' => 'O nome é obrigatório.',
+        'email.required' => 'O e-mail é obrigatório.',
+        'email.email' => 'Por favor, insira um e-mail válido.',
+        'email.unique' => 'Este e-mail já está em uso.',
+        'password.required' => 'A senha é obrigatória.',
+        'password.min' => 'A senha deve ter pelo menos 8 caracteres.',
+        'phones.array' => 'Os telefones devem estar em formato de lista.',
+        'phones.*.string' => 'Cada telefone deve ser uma string.',
+        'phones.*.max' => 'Cada telefone pode ter no máximo 16 caracteres.',
+    ];
+}
 }
