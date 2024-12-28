@@ -20,6 +20,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'empresa',
         'password',
     ];
 
@@ -52,9 +53,10 @@ class User extends Authenticatable
             'id',
             'name',
             'email',
+            'empresa',
             'created_at',
             'updated_at'
         )->orderBy('updated_at', 'DESC')->with('phones')->get();
-        
+
     }
 }

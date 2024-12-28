@@ -30,7 +30,7 @@ class UserService
      */
     public function show(string $id)
     {
-         return $this->user->find($id);
+         return $this->user->with('phones')->find($id);
     }
 
     /**
