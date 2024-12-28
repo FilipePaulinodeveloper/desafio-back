@@ -18,6 +18,10 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('fetch:news')->dailyAt('7:00');
         $schedule->job(SendNewsEmail::class)->dailyAt('7:00');
+
+        // Para teste imediato
+        // $schedule->command('fetch:news')->everyMinute();
+        // $schedule->job(SendNewsEmail::class)->everyMinute();
     }
 
     /**

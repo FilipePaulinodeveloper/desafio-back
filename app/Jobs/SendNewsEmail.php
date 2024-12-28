@@ -44,12 +44,6 @@ class SendNewsEmail implements ShouldQueue
                 $messageContent .= "  Link: {$item->link}\n\n";
             }
 
-            // Enviar o e-mail para o usuário
-            // Mail::raw($messageContent, function ($message) use ($user) {
-            //     $message->to($user->email)
-            //             ->subject('Notícias do dia');
-            // });
-
             Mail::send('emails.news-email', ['news' => $news], function ($message) use ($user) {
                 $message->to($user->email)
                         ->subject('Notícias do dia');
