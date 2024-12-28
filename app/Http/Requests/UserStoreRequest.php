@@ -26,6 +26,7 @@ class UserStoreRequest extends FormRequest
         return [
             'name'      => 'required|string|max:255',
             'email'     => 'required|string|email|max:255|unique:users',
+            'empresa' => 'required|string',
             'password'  => 'required|string|min:8', // Adicionada uma validação de tamanho mínimo para maior segurança
             'phones'    => 'nullable|array', // Valida que o campo seja um array
             'phones.*' => 'string|max:16'
@@ -39,6 +40,7 @@ class UserStoreRequest extends FormRequest
         'email.required' => 'O e-mail é obrigatório.',
         'email.email' => 'Por favor, insira um e-mail válido.',
         'email.unique' => 'Este e-mail já está em uso.',
+        'empresa' => 'required|string',
         'password.required' => 'A senha é obrigatória.',
         'password.min' => 'A senha deve ter pelo menos 8 caracteres.',
         'phones.array' => 'Os telefones devem estar em formato de lista.',

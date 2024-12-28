@@ -39,9 +39,31 @@ class UpdateUserRequest extends FormRequest
         return [
             'name'      => 'required|string|max:255',
             'email'     => 'required|string|email|max:255|unique:users,email,' . $userId,
+            'empresa' => 'required',
             'phones'    => 'nullable|array',
             'phones.*.id' => 'nullable|exists:phones,id', // Valida que o ID exista no banco
-            'phones.*.phone_number' => 'required|string|regex:/^\+?[0-9\-]{7,15}$/', // Valida o formato do número
+            'phones.*.phone_number' => 'string|max:16'
+        ];
+    }
+    public function messages()
+    {
+        return [
+            'name.required' => 'O campo nome é obrigatório.',
+            'name.string' => 'O nome deve ser um texto.',
+            'name.max' => 'O nome não pode ter mais de :max caracteres.',
+
+            'empresa.required' => 'O campo Empresa é obrigatório ',
+
+            'email.required' => 'O campo e-mail é obrigatório.',
+            'email.string' => 'O e-mail deve ser um texto.',
+            'email.email' => 'O e-mail deve ser um endereço válido.',
+            'email.max' => 'O e-mail não pode ter mais de :max caracteres.',
+            'email.unique' => 'Este e-mail já está em uso.',
+
+            'phones.array' => 'O campo telefones deve ser uma lista.',
+            'phones.*.id.exists' => 'O telefone selecionado não existe no banco de dados.',
+            'phones.*.phone_number.string' => 'O número de telefone deve ser um texto.',
+            'phones.*.phone_number.max' => 'O número de telefone não pode ter mais de :max caracteres.',
         ];
     }
 }
