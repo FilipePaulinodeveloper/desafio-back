@@ -1,54 +1,24 @@
 # SOBRE O DESAFIO para a vaga Desenvolvedor Full Stack #
 
-Prezado candidato(a), muito obrigado por participar deste processo seletivo e aceitar fazer o desafio
-
-Podemos garantir que sua entrega será analisada e te retornaremos sobre o resultado do teste.
-
-Antes de iniciar, gostaríamos de ressaltar que acreditamos que na área de desenvolvimento de software há várias maneiras de desenvolver uma solução, a ideia aqui não é dizer que essa é a
-certa e aquela é a errada, pois acreditamos que tudo na vida passa por um período de aprendizado e amadurecimento.
-
-Informamos que sua entrega não será compartilhada com ninguém fora do comitê de avaliação e após a nota ela será apagada, mantendo assim todo sigilo do participante.
-
-O que vamos avaliar é o raciocínio lógico para resolver os problemas, o conhecimento nos frameworks utilizados, os cuidados que teve e o tempo de entrega.
-
-Após a avaliação do comitê, os primeiros colocados no teste e na entrevista prévia serão entrevistados sobre a solução e se estiver em conformidade será convocado para a vaga.
-Os demais participantes irão apenas conhecer sua nota e sua posição e ficará na fila de espera, caso a E-Inov abra uma segunda vaga, o segundo será chamado e assim por diante.
-Esperamos a compreensão pois infelizmente não temos tempo que desejaríamos para dar um feedback para cada solução proposta.
-
 # Objetivo #
 * Utilizar da API Backend para o frontend https://bitbucket.org/einov/desafiovuejs/ e fazer os ajustes no CRUD de usuário.
 * E no Backend criar uma rotina diária que colete as notícias da UOL (https://rss.uol.com.br/feed/tecnologia.xml) e mande para
   todos os usuários cadastrados por e-mail. Nenhum usuário pode receber a mesma notícia duplicada.
 
+Backend API
 
-## Frontend ##
+Instalação: 1. Clone o repositório: git clone <url_do_repositorio> cd <nome_do_diretorio> 
+2. Instale as dependências do Composer: composer install 
+3. Configure as variáveis de ambiente no arquivo .env: - Certifique-se de configurar o serviço de envio de e-mails, por exemplo, com o Mailtrap: MAIL_MAILER=smtp MAIL_HOST=mailpit MAIL_PORT=1025 MAIL_USERNAME=null MAIL_PASSWORD=null MAIL_ENCRYPTION=null MAIL_FROM_ADDRESS="hello@example.com" MAIL_FROM_NAME="${APP_NAME}" 4. Execute as migrações do banco de dados (caso necessário): php artisan migrate
 
-### Ambiente local e mais informações sobre o desafio ###
+Endpoints da API: Criação de Usuário: • Método: POST • URL: http://127.0.0.1:8000/api/user • Descrição: Cria um novo usuário.
 
-* Repositório https://bitbucket.org/einov/desafiovuejs/
-* Clonar resositório: git clone https://einov@bitbucket.org/einov/desafiovuejs.git
-* Configurar o .env com o path da api do backend
-* Após baixar o repositório, executar: npm install && npm run serve
-* Acessar a página da aplicação conforme descrito no app running at local do vue.js (saída do terminal). Por padrão é http://localhost:8080/
-* Realizar o desafio conforme descrito na página inicial do projeto. Ver print abaixo:
+Listar Usuários: • Método: GET • URL: http://127.0.0.1:8000/api/users • Descrição: Retorna a lista de todos os usuários.
 
-![alt](https://bitbucket.org/einov/desafiofullstack/downloads/frontend.png)
-* Após finalizar o desafio commitar a solução em um repositório seu e conceder acesso ao usuário <contato@einov.com>
-* Avisar a E-Inov para validar a solução 😃
+Exibir um Usuário: • Método: GET • URL: http://127.0.0.1:8000/api/user/{id} • Descrição: Exibe os detalhes de um usuário específico.
 
+Atualizar Usuário: • Método: PUT • URL: http://127.0.0.1:8000/api/user/{id} • Descrição: Atualiza os dados de um usuário específico.
 
-## Backend ##
+Deletar Usuário: • Método: DELETE • URL: http://127.0.0.1:8000/api/user/{id} • Descrição: Deleta um usuário específico.
 
-### Ambiente local e mais informações sobre o desafio ###
-
-* Repositório https://bitbucket.org/einov/desafiofullstackback
-* Clonar resositório: git clone https://einov@bitbucket.org/einov/desafiofullstackback.git
-* Criar .env (pode ser basear no .env.example)
-* Após baixar o repositório, executar composer install e demais procedimentos necessários para subir localmente o ambiente.
-* Segue exemplos das requisições para testar e validar no Postman:
-  https://bitbucket.org/einov/desafiofullstackback/downloads/desafio.postman_collection.json
-
-![alt](https://bitbucket.org/einov/desafiofullstackback/downloads/postman-get-users.png)
-
-* Após finalizar o desafio commitar a solução em um repositório seu e conceder acesso ao usuário <contato@einov.com>
-* Avisar a E-Inov para validar a solução 😃
+Envio de E-mails: O envio de e-mails é feito através de um comando programado. 1. Para executar o envio de e-mails automaticamente, execute o seguinte comando, que está agendado para rodar todos os dias às 7h da manhã: php artisan schedule:work 2. Para testar imediatamente o envio de e-mails, descomente as seguintes linhas no arquivo app/Console/Kernel.php: // $schedule->command('fetch:news')->everyMinute(); // $schedule->job(SendNewsEmail::class)->everyMinute(); e execute o comando: php artisan schedule:run
